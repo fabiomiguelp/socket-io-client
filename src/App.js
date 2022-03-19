@@ -1,28 +1,26 @@
 import React, { useState, useEffect } from "react";
-import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://127.0.0.1:4001";
+import { io } from "socket.io-client";
+const ENDPOINT = "http://localhost:4001";
+
+const socket = io(ENDPOINT);
+socket.on('connect', () => console.log('connected to backend id: ' + socket.id));
 
 function App() {
-  const [response, setResponse] = useState([]);
-
+  const [message, updateMessage] = useState([]);
+ 
   useEffect(() => {
-   
 
-    const socket = socketIOClient.connect(ENDPOINT,{
-      cors:{
-         origin:'http://127.0.0.1:4001'
-      }
-     });
+ 
+          socket.on('insert', data => {
+            updateMessage([...message, data]);
+            console.log(data[0].id);
+         });
 
-    socket.on("connection", data => {
-
-      console.log('oii' + data[0]);
-    });
   }, []);
 
   return (
     <p>
-      It's <time dateTime={response}>{response}</time>
+
     </p>
   );
 }
